@@ -80,9 +80,7 @@ LabelAndWeightMetadataRule写好了，那么我们如何使用它，使之生效
 ## 测试
 参见PreFilter源码，模拟了几个用户的标签，参见LabelAndWeightMetadataRule源码，模拟了OR AND两种标签处理策略。依次开启 config eureka provide（开两个实例，通过启动参数server.port指定不同端口区分） consumer zuul
 
-访问 http://localhost:8761/metadata.html 设置第一个provide 实例 orLabel为 CN,Test 发送请求头带入Authorization: emt 访问http://localhost:8080/provider/user 多刷几次，可以看到zuul所有请求均路由给了第一个实例。访问http://localhost:8080/consumer/test 多刷几次，可以看到，consumer调用均路由给了第一个实例。
-
-设置第二个provide 实例 andLabel为 EN,Male 发送请求头带入Authorization: em 访问http://localhost:8080/provider/user 多刷几次，可以看到zuul所有请求均路由给了第二个实例。访问http://localhost:8080/consumer/test 多刷几次，可以看到，consumer调用均路由给了第二个实例。
+访问 http://localhost:6006/metadata.html 设置第一个provide 实例 orLabel为 CN,Test 发送请求头带入Authorization: gray 访问http://127.0.0.1:4002/order/inner/order/getOrderInfoListByHorsemanId?horsemanId=110 多刷几次，可以看到zuul所有请求均路由给了第一个实例。访问http://127.0.0.1:4002/order/test?name="hehe"&age=123 多刷几次，可以看到，order-service 调用均路由给了第一个实例。
 
 Authorization头还可以设置为PreFilter里面的模拟token来做测试，至此所有内容讲解完毕，技术路线拉通，剩下的就是根据需求来完善你自己的路由策略啦。
 
