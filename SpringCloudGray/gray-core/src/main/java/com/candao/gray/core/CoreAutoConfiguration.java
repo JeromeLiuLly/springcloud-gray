@@ -9,8 +9,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.github.charlesvhe.springcloud.practice.core.CoreFeignRequestInterceptor;
-
 import feign.Feign;
 
 @Configuration
