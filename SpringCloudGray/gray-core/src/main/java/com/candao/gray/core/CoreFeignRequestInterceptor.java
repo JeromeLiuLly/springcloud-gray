@@ -9,12 +9,13 @@ import feign.RequestTemplate;
 
 public class CoreFeignRequestInterceptor implements RequestInterceptor {
 	private static final Logger logger = LoggerFactory.getLogger(CoreHttpRequestInterceptor.class);
-	
+
 	@Override
 	public void apply(RequestTemplate template) {
-		String header = StringUtils.collectionToDelimitedString(CoreHeaderInterceptor.label.get(),CoreHeaderInterceptor.HEADER_LABEL_SPLIT);
+		String header = StringUtils.collectionToDelimitedString(CoreHeaderInterceptor.label.get(),
+				CoreHeaderInterceptor.HEADER_LABEL_SPLIT);
 		template.header(CoreHeaderInterceptor.HEADER_LABEL, header);
-		logger.info("label: "+header);
+		logger.info("label: " + header);
 	}
 
 }

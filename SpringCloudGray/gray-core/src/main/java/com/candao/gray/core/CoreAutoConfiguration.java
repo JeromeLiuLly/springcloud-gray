@@ -1,6 +1,7 @@
 package com.candao.gray.core;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.netflix.ribbon.DefaultPropertiesFactory;
 import org.springframework.cloud.netflix.ribbon.RibbonClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,24 +14,28 @@ import feign.Feign;
 
 @Configuration
 @EnableWebMvc
-@RibbonClients(defaultConfiguration = DefaultRibbonConfiguration.class)
 public class CoreAutoConfiguration extends WebMvcConfigurerAdapter {
 
-    @LoadBalanced
-    @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add(new CoreHttpRequestInterceptor());
-        return restTemplate;
-    }
-    
-    @Bean
+	@Bean
+	public DefaultPropertiesFactory defaultPropertiesFactory() {
+		return new DefaultPropertiesFactory();
+	}
+
+	@LoadBalanced
+	@Bean
+	public RestTemplate restTemplate() {
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getInterceptors().add(new CoreHttpRequestInterceptor());
+		return restTemplate;
+	}
+
+	@Bean
 	public Feign.Builder feignBuilder() {
 		return Feign.builder().requestInterceptor(new CoreFeignRequestInterceptor());
 	}
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new CoreHeaderInterceptor());
-    }
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new CoreHeaderInterceptor());
+	}
 }

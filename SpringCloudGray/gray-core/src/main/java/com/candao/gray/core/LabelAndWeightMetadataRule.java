@@ -56,6 +56,7 @@ public class LabelAndWeightMetadataRule extends ZoneAvoidanceRule {
                 List<String> metadataLabel = Arrays.asList(labelOr.split(CoreHeaderInterceptor.HEADER_LABEL_SPLIT));
                 for (String label : metadataLabel) {
                     if(CoreHeaderInterceptor.label.get().contains(label)){
+                    	System.out.println("目标服务："+server.getHostPort() + "服务名称：" + ((DiscoveryEnabledServer) server).getInstanceInfo().getAppName());
                         return server;
                     }
                 }
