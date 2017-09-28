@@ -9,6 +9,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.github.charlesvhe.springcloud.practice.core.CoreFeignRequestInterceptor;
+
+import feign.Feign;
+
 @Configuration
 @EnableWebMvc
 @RibbonClients(defaultConfiguration = DefaultRibbonConfiguration.class)
@@ -21,6 +25,11 @@ public class CoreAutoConfiguration extends WebMvcConfigurerAdapter {
         restTemplate.getInterceptors().add(new CoreHttpRequestInterceptor());
         return restTemplate;
     }
+    
+    @Bean
+	public Feign.Builder feignBuilder() {
+		return Feign.builder().requestInterceptor(new CoreFeignRequestInterceptor());
+	}
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
