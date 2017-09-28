@@ -8,7 +8,7 @@ import org.springframework.cloud.netflix.ribbon.PropertiesFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.StringUtils;
 
-/*public class DefaultRibbonConfiguration {
+public class DefaultRibbonConfiguration {
     @Value("${ribbon.client.name:#{null}}")
     private String name;
 
@@ -33,4 +33,4 @@ import org.springframework.util.StringUtils;
         rule.initWithNiwsConfig(config);
         return rule;
     }
-}*/
+}
