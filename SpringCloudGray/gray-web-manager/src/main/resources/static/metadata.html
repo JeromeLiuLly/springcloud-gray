@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>metadata</title>
+<link href="/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="/bootstrap.min.js"></script>
+<script src="/bootstrap-switch.js"></script>
+<link href="/bootstrap-switch.css" rel="stylesheet">
+<script type="text/javascript">
+var editStrategyData = new Map();
+	$(document).ready(function() {
+		var getAllStrategy = function(data){
+			var html;
+			data.forEach(function(val, index, arr) {
+				html += '<tr>';
+				html += '<td>'+arr[index].id+'</td>';
+				html += '<td>'+arr[index].strategyName+'</td>';
+				html += '<td>'+arr[index].serviceName+'</td>';
+				html += '<td>'+arr[index].instanceId+'</td>';
+				html += '<td>'+arr[index].serviceTag+'</td>';
+				html += '<td>'+arr[index].strategyValue+'</td>';
+				var weight = arr[index].weight == null ? " " : arr[index].weight;
+				html += '<td>'+weight+'</td>';
+				html += '<td>'+arr[index].version+'</td>';
+				var status = arr[index].status==1 ? "生效" : "关闭";
+				html += '<td>'+status+'</td>';
+				html += '<td>';
+				html += '<button type="button" onclick="synMetaDataStrategy(\''+arr[index].id+'\',\''+arr[index].serviceName+'\',\''+arr[index].instanceId+'\',\''+arr[index].serviceTag +"="+arr[index].strategyValue+'\')" class="btn btn-lg btn-success">同步</button>';
+				html += '&nbsp;&nbsp;&nbsp;';
+				var result = arr[index].status==1 ? "关闭" : "开启";
+				html += '<button type="button" onclick="opStrategyStatus(\''+arr[index].id+'\')" class="btn btn-lg btn-default">'+result+'</button>';
+				html += '&nbsp;&nbsp;&nbsp;';
+				editStrategyData[arr[index].id]=arr[index];
+				html += '<button type="button" onclick="editStrategy(\''+arr[index].id+'\')" class="btn btn-lg btn-warning" >编辑</button>';
+				html += '&nbsp;&nbsp;&nbsp;';
+				html += '<button type="button" onclick="deleteStrategy(\''+arr[index].id+'\')" class="btn btn-lg btn-danger">删除</button>';
+				html += '</td>';
+				html += '</tr>';
+			})
+			
+			$("#all-strategy").empty(); 
+			$("#all-strategy").append(html);
+		}
+		
+		$.ajax({
+			url : "http://192.168.204.101:6015/eureka/apps/switch",
+			type : "GET",
+			success : function(data) {
+				console.info(data);
+				if(data.statusCode == "200"){
+					if(data.errorMsg == "true"){
+						//$('.switch').bootstrapSwitch('setState', true);
+						$(".switch-animate").removeClass("switch-off")
+						$(".switch-animate").addClass("switch-on")
+					}else{
+						$(".switch-animate").removeClass("switch-on")
+						$(".switch-animate").addClass("switch-off")
+					}
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+		
+		$('.switch').on('switch-change', function (e, datas) {
+			$.ajax({
+				url : "http://192.168.204.101:6015/eureka/apps/updateSwitch",
+				type : "GET",
+				success : function(data) {
+					console.info(data);
+					if(data.statusCode == "200"){
+						if(datas.value){
+							$(".switch-animate").removeClass("switch-off")
+							$(".switch-animate").addClass("switch-on")
+						}else{
+							$(".switch-animate").removeClass("switch-on")
+							$(".switch-animate").addClass("switch-off")
+						}
+					}else{
+						alert(data.errorMsg)
+					}
+				},
+				error : function(data) {
+					alert("服务异常");
+				}
+			})
+		});
+		
+		var getEurekaApps = function(data){
+			var json = jQuery.parseJSON(data);
+			var data = json.applications.application;
+			var html;
+			var applicationName;
+			data.forEach(function(val, index, arr) {
+				html += '<tr>';
+				html += '<td rowspan="'+arr[index].instance.length+'">'+arr[index].name+'</td>';
+				applicationName = arr[index].name;
+				var childData = arr[index].instance;
+				childData.forEach(function(val2, index2, arr2) {
+					html += '<td>'+arr2[index2].instanceId+'</td>';
+					html += '<td>'+arr2[index2].hostName+'</td>';
+					html += '<td>';
+					html += '<table class="table table-striped">';
+					html += '<thead>';
+					html += '<tr>';
+					html += '<th>灰度标签</th>';
+					html += '<th>权重</th>';
+					html += '<th>灰度值域</th>';
+					html += '<th>操作</th>';
+					html += '</tr>';
+					html += '</thead>';
+					html += '<tbody>';
+					var obj = arr2[index2].metadata;
+					jQuery.each(obj, function(i, val) {  
+						if( i != '@class'){
+							 html += '<tr>';
+								html += '<td>'+i+'</td>';
+								if( i == "weight"){
+									html += '<td>'+val+'</td>';
+									html += '<td></td>';
+								}else{
+									html += '<td></td>';
+									html += '<td>'+val+'</td>';
+								}
+								html += '<td><button type="button" onclick="deleteMetaData(\''+applicationName+'\',\''+arr2[index2].instanceId+'\',\''+i+"="+val+'\')" class="btn btn-lg btn-danger">删除</button></td>';
+								html += '</tr>';
+						}
+					});
+					html += '</tbody>';
+					html += '</table>';
+					html += '</td>';
+					html += '</tr>';
+					html += '<tr>';
+				}) 
+			})
+			$("#eureka-apps").empty(); 
+			$("#eureka-apps").append(html);
+		}
+		
+		//获取数据库服务进行灰度操作信息
+		$.ajax({
+			url : "http://192.168.204.101:6015/eureka/apps/allStrategy",
+			type : "GET",
+			success : function(data) {
+				if(data != null && data != ""){
+					 getAllStrategy(data)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+		
+		//拉取注册中心服务信息
+		$.ajax({
+			url : "http://192.168.204.101:6015/eureka/apps",
+			type : "GET",
+			success : function(data) {
+				getEurekaApps(data)
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+		
+		var intervalTime = function(){
+			$.ajax({
+				url : "http://192.168.204.101:6015/eureka/apps",
+				type : "GET",
+				success : function(data) {
+					getEurekaApps(data)
+				},
+				error : function(data) {
+					alert("服务异常");
+				}
+			})
+		}
+		
+		//配置定时任务,刷新注册中心的灰度配置
+		setInterval(intervalTime,60000); 
+
+	});
+	
+	//删除注册中心的灰度标签
+	var deleteMetaData = function(applicationName,instanceId,tag){
+		$.ajax({
+			url : "http://192.168.204.101:6015/eureka/apps/"+applicationName+"/"+instanceId+"/metadata?"+tag,
+			type : "GET",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert("删除成功,请等待一分钟后信息生效");
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
+	//同步灰度服务标签到注册中心
+	var synMetaDataStrategy = function(id,applicationName,instanceId,tag){
+		$.ajax({
+			url : "http://192.168.204.101:6015/eureka/apps/"+id+"/"+applicationName+"/"+instanceId+"/synMetaDataStrategy?"+tag,
+			type : "GET",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert("同步成功,请等待一分钟后信息生效");
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
+	//更新灰度服务的状态
+	var opStrategyStatus = function(id){
+		$.ajax({
+			url : "http://192.168.204.101:6015/eureka/apps/"+id+"/updateStrategy",
+			type : "GET",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert(data.errorMsg);
+					window.location.reload()
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
+	//删除灰度服务
+	var deleteStrategy = function(id){
+		$.ajax({
+			url : "http://192.168.204.101:6015/eureka/apps/"+id+"/deleteStrategy",
+			type : "GET",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert(data.errorMsg);
+					window.location.reload()
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
+	var editStrategySubmit = function(){
+		var strategy=new Object();
+		strategy.id = $("#id").val();
+		strategy.strategyName = $("#strategyName").val();
+		strategy.weight = $("#weight").val();
+		strategy.serviceTag = $("#serviceTag").val();
+		strategy.strategyValue = $("#strategyValue").val();
+		strategy.version = $("#version").val();
+		strategy.status = $("#status").val();
+		console.info(strategy);
+		$.ajax({
+			url : "http://192.168.204.101:6015/eureka/apps/editStrategy",
+			data: strategy,
+			type : "POST",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert(data.errorMsg);
+					window.location.reload()
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
+	var addStrategySubmit = function(){
+		var strategy=new Object();
+		strategy.strategyName = $("#strategyName").val();
+		strategy.weight = $("#weight").val();
+		strategy.serviceTag = $("#serviceTag").val();
+		strategy.strategyValue = $("#strategyValue").val();
+		strategy.version = $("#version").val();
+		strategy.status = $("#status").val();
+		strategy.serviceName = $("#serviceName").val();
+		strategy.instanceId = $("#instanceId").val();
+		$.ajax({
+			url : "http://192.168.204.101:6015/eureka/apps/addStrategy",
+			data: strategy,
+			type : "POST",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert(data.errorMsg);
+					window.location.reload()
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
+	var editStrategy = function(id){
+		console.info(editStrategyData);
+		data = editStrategyData[id];
+		$("#myModal").modal('show');
+		$("#serviceName").attr("readonly","readonly");
+		$("#instanceId").attr("readonly","readonly");
+		$("#myModalLabel").html("编辑灰度服务")
+		$("#id").val(data.id);
+		$("#strategyName").val(data.strategyName);
+		$("#serviceName").val(data.serviceName);
+		$("#instanceId").val(data.instanceId);
+		$("#weight").val(data.weight);
+		$("#serviceTag").val(data.serviceTag);
+		$("#strategyValue").val(data.strategyValue);
+		$("#version").val(data.version);
+		$("#status").find("option[value="+data.status+"]").attr("selected",true);
+		$("#submitOP").attr("onclick","editStrategySubmit()");
+	}
+	
+	var addStrategy = function(){
+		$("#myModal").modal('show');
+		$("#myModalLabel").html("新增灰度服务")
+		$(".modal-body input").val("");
+		$("#serviceName").removeAttr("readonly");
+		$("#instanceId").removeAttr("readonly");
+		$("#submitOP").attr("onclick","addStrategySubmit()");
+	}
+</script>
+<style type="text/css">
+body {
+	font-family: 微软雅黑
+}
+
+.btn-lg {
+	padding: 5px 8px;
+	font-size: 15px;
+	line-height: 1.3333333;
+	border-radius: 6px;
+}
+</style>
+</head>
+<body>
+	<h1>餐道灰度发布操作平台</h1>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-offset-1 main">
+				<h2 class="sub-header">灰度服务列表&nbsp;&nbsp;&nbsp;<button type="button" onclick="addStrategy()" class="btn btn-lg btn-success">新增服务</button>
+				                               &nbsp;&nbsp;&nbsp;<div style="margin-left: 350px; margin-top: -30px"><div class="switch"><input type="checkbox"/></div></div></h2>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>id</th>
+								<th>灰度名称</th>
+								<th>服务名</th>
+								<th>instanceId</th>
+								<th>灰度标签</th>
+								<th>灰度值域(可选)</th>
+								<th>权重(可选)</th>
+								<th>服务版本号</th>
+								<th>状态</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="all-strategy">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-offset-1 main">
+				<h2 class="sub-header">注册中心服务列表</h2>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>服务名</th>
+								<th>instanceId</th>
+								<th>hostName</th>
+								<th>灰度汇总</th>
+						</thead>
+						<tbody id="eureka-apps">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					编辑灰度服务
+				</h4>
+			</div>
+			<div class="modal-body">
+			    <input id="id"  type="hidden" />
+				灰度名称：<input id="strategyName" class="form-control" type="text" value="客户端用户名【test】灰度策略"/>
+				服务名称：<input id="serviceName" class="form-control" type="text" value="CONFIG-SERVER"/>
+				instanceId：<input id="instanceId" class="form-control" type="text" value="10.200.102.136:config-server:6007"/>
+				灰度标签：<input id="serviceTag" class="form-control" type="text" value="labelAnd"/>
+				灰度值域: <input id="strategyValue" class="form-control" type="text" value="CONFIG-SERVER"/>
+				权重: <input id="weight" class="form-control" type="number" value="10"/>
+				服务版本:<input id="version" class="form-control" type="text" value="0.0.1"/>
+				服务状态:<select id="status" class="form-control">
+  							<option value="1">生效</option>
+  							<option value="0">关闭</option>
+					</select>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="button" id="submitOP" class="btn btn-primary">
+					提交更改
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+</body>
+</html>

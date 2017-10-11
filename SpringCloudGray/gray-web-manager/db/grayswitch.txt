@@ -1,0 +1,7 @@
+CREATE TABLE `grayswitch` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gray_switch` int(11) DEFAULT NULL COMMENT '开关【1：启动；0：关闭】',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+insert `grayswitch`(gray_switch) values(1)

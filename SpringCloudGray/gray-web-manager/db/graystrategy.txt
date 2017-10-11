@@ -1,0 +1,14 @@
+CREATE TABLE `graystrategy` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `strategy_name` varchar(255) DEFAULT NULL,
+  `service_name` varchar(255) DEFAULT NULL,
+  `instance_id` varchar(255) DEFAULT NULL,
+  `weight` int(11) DEFAULT NULL,
+  `service_tag` varchar(255) DEFAULT NULL,
+  `strategy_value` varchar(255) DEFAULT NULL,
+  `version` varchar(255) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `status` int(11) DEFAULT '0' COMMENT '0：关闭；1：生效',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
