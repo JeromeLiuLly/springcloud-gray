@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>metadata</title>
 <link href="/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="/jquery.min.js"></script>
 <script src="/bootstrap.min.js"></script>
 <script src="/bootstrap-switch.js"></script>
 <link href="/bootstrap-switch.css" rel="stylesheet">
@@ -45,7 +45,7 @@ var editStrategyData = new Map();
 		}
 		
 		$.ajax({
-			url : "http://192.168.204.101:6015/eureka/apps/switch",
+			url : "/eureka/apps/switch",
 			type : "GET",
 			success : function(data) {
 				console.info(data);
@@ -69,7 +69,7 @@ var editStrategyData = new Map();
 		
 		$('.switch').on('switch-change', function (e, datas) {
 			$.ajax({
-				url : "http://192.168.204.101:6015/eureka/apps/updateSwitch",
+				url : "/eureka/apps/updateSwitch",
 				type : "GET",
 				success : function(data) {
 					console.info(data);
@@ -144,7 +144,7 @@ var editStrategyData = new Map();
 		
 		//获取数据库服务进行灰度操作信息
 		$.ajax({
-			url : "http://192.168.204.101:6015/eureka/apps/allStrategy",
+			url : "/eureka/apps/allStrategy",
 			type : "GET",
 			success : function(data) {
 				if(data != null && data != ""){
@@ -158,7 +158,7 @@ var editStrategyData = new Map();
 		
 		//拉取注册中心服务信息
 		$.ajax({
-			url : "http://192.168.204.101:6015/eureka/apps",
+			url : "/eureka/apps",
 			type : "GET",
 			success : function(data) {
 				getEurekaApps(data)
@@ -170,7 +170,7 @@ var editStrategyData = new Map();
 		
 		var intervalTime = function(){
 			$.ajax({
-				url : "http://192.168.204.101:6015/eureka/apps",
+				url : "/eureka/apps",
 				type : "GET",
 				success : function(data) {
 					getEurekaApps(data)
@@ -189,7 +189,7 @@ var editStrategyData = new Map();
 	//删除注册中心的灰度标签
 	var deleteMetaData = function(applicationName,instanceId,tag){
 		$.ajax({
-			url : "http://192.168.204.101:6015/eureka/apps/"+applicationName+"/"+instanceId+"/metadata?"+tag,
+			url : "/eureka/apps/"+applicationName+"/"+instanceId+"/metadata?"+tag,
 			type : "GET",
 			success : function(data) {
 				if(data.statusCode == "200"){
@@ -207,7 +207,7 @@ var editStrategyData = new Map();
 	//同步灰度服务标签到注册中心
 	var synMetaDataStrategy = function(id,applicationName,instanceId,tag){
 		$.ajax({
-			url : "http://192.168.204.101:6015/eureka/apps/"+id+"/"+applicationName+"/"+instanceId+"/synMetaDataStrategy?"+tag,
+			url : "/eureka/apps/"+id+"/"+applicationName+"/"+instanceId+"/synMetaDataStrategy?"+tag,
 			type : "GET",
 			success : function(data) {
 				if(data.statusCode == "200"){
@@ -225,7 +225,7 @@ var editStrategyData = new Map();
 	//更新灰度服务的状态
 	var opStrategyStatus = function(id){
 		$.ajax({
-			url : "http://192.168.204.101:6015/eureka/apps/"+id+"/updateStrategy",
+			url : "/eureka/apps/"+id+"/updateStrategy",
 			type : "GET",
 			success : function(data) {
 				if(data.statusCode == "200"){
@@ -244,7 +244,7 @@ var editStrategyData = new Map();
 	//删除灰度服务
 	var deleteStrategy = function(id){
 		$.ajax({
-			url : "http://192.168.204.101:6015/eureka/apps/"+id+"/deleteStrategy",
+			url : "/eureka/apps/"+id+"/deleteStrategy",
 			type : "GET",
 			success : function(data) {
 				if(data.statusCode == "200"){
@@ -271,7 +271,7 @@ var editStrategyData = new Map();
 		strategy.status = $("#status").val();
 		console.info(strategy);
 		$.ajax({
-			url : "http://192.168.204.101:6015/eureka/apps/editStrategy",
+			url : "/eureka/apps/editStrategy",
 			data: strategy,
 			type : "POST",
 			success : function(data) {
@@ -299,7 +299,7 @@ var editStrategyData = new Map();
 		strategy.serviceName = $("#serviceName").val();
 		strategy.instanceId = $("#instanceId").val();
 		$.ajax({
-			url : "http://192.168.204.101:6015/eureka/apps/addStrategy",
+			url : "/eureka/apps/addStrategy",
 			data: strategy,
 			type : "POST",
 			success : function(data) {
