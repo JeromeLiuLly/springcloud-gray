@@ -10,6 +10,7 @@
 <link href="/bootstrap-switch.css" rel="stylesheet">
 <script type="text/javascript">
 var editStrategyData = new Map();
+var editUserData = new Map();
 	$(document).ready(function() {
 		var getAllStrategy = function(data){
 			var html;
@@ -44,14 +45,39 @@ var editStrategyData = new Map();
 			$("#all-strategy").append(html);
 		}
 		
+		var getAllUser = function(data){
+			var html;
+			data.forEach(function(val, index, arr) {
+				html += '<tr>';
+				html += '<td>'+arr[index].id+'</td>';
+				html += '<td>'+arr[index].userName+'</td>';
+				html += '<td>'+arr[index].serviceTag+'</td>';
+				var weight = arr[index].weight == null ? " " : arr[index].weight;
+				html += '<td>'+weight+'</td>';
+				var status = arr[index].status==1 ? "生效" : "关闭";
+				html += '<td>'+status+'</td>';
+				html += '<td>';
+				var result = arr[index].status==1 ? "关闭" : "开启";
+				html += '<button type="button" onclick="opUserStatus(\''+arr[index].id+'\')" class="btn btn-lg btn-default">'+result+'</button>';
+				html += '&nbsp;&nbsp;&nbsp;';
+				editUserData[arr[index].id]=arr[index];
+				html += '<button type="button" onclick="editUser(\''+arr[index].id+'\')" class="btn btn-lg btn-warning" >编辑</button>';
+				html += '&nbsp;&nbsp;&nbsp;';
+				html += '<button type="button" onclick="deleteUser(\''+arr[index].id+'\')" class="btn btn-lg btn-danger">删除</button>';
+				html += '</td>';
+				html += '</tr>';
+			})
+			
+			$("#all-user").empty(); 
+			$("#all-user").append(html);
+		}
+		
 		$.ajax({
 			url : "/eureka/apps/switch",
 			type : "GET",
 			success : function(data) {
-				console.info(data);
 				if(data.statusCode == "200"){
 					if(data.errorMsg == "true"){
-						//$('.switch').bootstrapSwitch('setState', true);
 						$(".switch-animate").removeClass("switch-off")
 						$(".switch-animate").addClass("switch-on")
 					}else{
@@ -72,7 +98,6 @@ var editStrategyData = new Map();
 				url : "/eureka/apps/updateSwitch",
 				type : "GET",
 				success : function(data) {
-					console.info(data);
 					if(data.statusCode == "200"){
 						if(datas.value){
 							$(".switch-animate").removeClass("switch-off")
@@ -149,6 +174,20 @@ var editStrategyData = new Map();
 			success : function(data) {
 				if(data != null && data != ""){
 					 getAllStrategy(data)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+		
+		//获取数据库服务进行灰度操作信息
+		$.ajax({
+			url : "/user/allUser",
+			type : "GET",
+			success : function(data) {
+				if(data != null && data != ""){
+					 getAllUser(data)
 				}
 			},
 			error : function(data) {
@@ -241,10 +280,48 @@ var editStrategyData = new Map();
 		})
 	}
 	
+	//更新用户灰度策略的状态
+	var opUserStatus = function(id){
+		$.ajax({
+			url : "/user/"+id+"/updateUser",
+			type : "GET",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert(data.errorMsg);
+					window.location.reload()
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
 	//删除灰度服务
 	var deleteStrategy = function(id){
 		$.ajax({
 			url : "/eureka/apps/"+id+"/deleteStrategy",
+			type : "GET",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert(data.errorMsg);
+					window.location.reload()
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
+	//删除用户灰度策略
+	var deleteUser = function(id){
+		$.ajax({
+			url : "/user/"+id+"/deleteUser",
 			type : "GET",
 			success : function(data) {
 				if(data.statusCode == "200"){
@@ -269,7 +346,6 @@ var editStrategyData = new Map();
 		strategy.strategyValue = $("#strategyValue").val();
 		strategy.version = $("#version").val();
 		strategy.status = $("#status").val();
-		console.info(strategy);
 		$.ajax({
 			url : "/eureka/apps/editStrategy",
 			data: strategy,
@@ -316,8 +392,56 @@ var editStrategyData = new Map();
 		})
 	}
 	
+	
+	var editUserSubmit = function(){
+		var user=new Object();
+		user.id = $("#id").val();
+		user.weight = $("#weightUser").val();
+		user.serviceTag = $("#serviceTagUser").val();
+		user.status = $("#statusUser").val();
+		$.ajax({
+			url : "/user/editUser",
+			data: user,
+			type : "POST",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert(data.errorMsg);
+					window.location.reload()
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
+	var addUserSubmit = function(){
+		var user=new Object();
+		user.userName = $("#userName").val();
+		user.weight = $("#weightUser").val();
+		user.serviceTag = $("#serviceTagUser").val();
+		user.status = $("#statusUser").val();
+		$.ajax({
+			url : "/user/addUser",
+			data: user,
+			type : "POST",
+			success : function(data) {
+				if(data.statusCode == "200"){
+					alert(data.errorMsg);
+					window.location.reload()
+				}else{
+					alert(data.errorMsg)
+				}
+			},
+			error : function(data) {
+				alert("服务异常");
+			}
+		})
+	}
+	
 	var editStrategy = function(id){
-		console.info(editStrategyData);
 		data = editStrategyData[id];
 		$("#myModal").modal('show');
 		$("#serviceName").attr("readonly","readonly");
@@ -335,6 +459,19 @@ var editStrategyData = new Map();
 		$("#submitOP").attr("onclick","editStrategySubmit()");
 	}
 	
+	var editUser = function(id){
+		data = editUserData[id];
+		$("#myUserModal").modal('show');
+		$("#userName").attr("readonly","readonly");
+		$("#myUserModalLabel").html("编辑用户灰度策略")
+		$("#id").val(data.id);
+		$("#userName").val(data.userName);
+		$("#weightUser").val(data.weight);
+		$("#serviceTagUser").val(data.serviceTag);
+		$("#statusUser").find("option[value="+data.status+"]").attr("selected",true);
+		$("#submitUserOP").attr("onclick","editUserSubmit()");
+	}
+	
 	var addStrategy = function(){
 		$("#myModal").modal('show');
 		$("#myModalLabel").html("新增灰度服务")
@@ -342,6 +479,14 @@ var editStrategyData = new Map();
 		$("#serviceName").removeAttr("readonly");
 		$("#instanceId").removeAttr("readonly");
 		$("#submitOP").attr("onclick","addStrategySubmit()");
+	}
+	
+	var addUser = function(){
+		$("#myUserModal").modal('show');
+		$("#myUserModalLabel").html("新增用户灰度策略")
+		$(".modal-body input").val("");
+		$("#userName").removeAttr("readonly");
+		$("#submitUserOP").attr("onclick","addUserSubmit()");
 	}
 </script>
 <style type="text/css">
@@ -394,6 +539,31 @@ body {
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-offset-1 main">
+				<h2 class="sub-header">筛选用户进行灰度策略列表&nbsp;&nbsp;&nbsp;<button type="button" onclick="addUser()" class="btn btn-lg btn-success">新增用户</button></h2>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>id</th>
+								<th>用户名</th>
+								<th>灰度标签</th>
+								<th>权重(用于同用户名下的灰度策略,取权重最大的)</th>
+								<th>状态</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="all-user">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br />
+	<br />
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-offset-1 main">
 				<h2 class="sub-header">注册中心服务列表</h2>
 				<div class="table-responsive">
 					<table class="table table-striped">
@@ -426,13 +596,13 @@ body {
 			</div>
 			<div class="modal-body">
 			    <input id="id"  type="hidden" />
-				灰度名称：<input id="strategyName" class="form-control" type="text" value="客户端用户名【test】灰度策略"/>
-				服务名称：<input id="serviceName" class="form-control" type="text" value="CONFIG-SERVER"/>
-				instanceId：<input id="instanceId" class="form-control" type="text" value="10.200.102.136:config-server:6007"/>
-				灰度标签：<input id="serviceTag" class="form-control" type="text" value="labelAnd"/>
-				灰度值域: <input id="strategyValue" class="form-control" type="text" value="CONFIG-SERVER"/>
-				权重: <input id="weight" class="form-control" type="number" value="10"/>
-				服务版本:<input id="version" class="form-control" type="text" value="0.0.1"/>
+				灰度名称：<input id="strategyName" class="form-control" type="text"/>
+				服务名称：<input id="serviceName" class="form-control" type="text"/>
+				instanceId：<input id="instanceId" class="form-control" type="text"/>
+				灰度标签：<input id="serviceTag" class="form-control" type="text"/>
+				灰度值域: <input id="strategyValue" class="form-control" type="text"/>
+				权重: <input id="weight" class="form-control" type="number"/>
+				服务版本:<input id="version" class="form-control" type="text"/>
 				服务状态:<select id="status" class="form-control">
   							<option value="1">生效</option>
   							<option value="0">关闭</option>
@@ -442,6 +612,39 @@ body {
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
 				</button>
 				<button type="button" id="submitOP" class="btn btn-primary">
+					提交更改
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myUserModalLabel">
+					编辑用户灰度策略
+				</h4>
+			</div>
+			<div class="modal-body">
+			    <input id="id"  type="hidden" />
+				用户名：<input id="userName" class="form-control" type="text"/>
+				灰度标签：<input id="serviceTagUser" class="form-control" type="text"/>
+				权重: <input id="weightUser" class="form-control" type="number"/>
+				服务状态:<select id="statusUser" class="form-control">
+  							<option value="1">生效</option>
+  							<option value="0">关闭</option>
+					</select>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="button" id="submitUserOP" class="btn btn-primary">
 					提交更改
 				</button>
 			</div>

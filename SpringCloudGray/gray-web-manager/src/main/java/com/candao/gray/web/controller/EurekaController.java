@@ -143,7 +143,7 @@ public class EurekaController {
 		
 		
 		httpResult.statusCode = 200;
-		httpResult.errorMsg = "状态更新成功";
+		httpResult.errorMsg = "灰度服务更新成功";
 		return httpResult;
 	}
 	
@@ -185,7 +185,7 @@ public class EurekaController {
 		grayStrategyService.deleteStrategyById(id);
 		
 		httpResult.statusCode = 200;
-		httpResult.errorMsg = "状态更新成功";
+		httpResult.errorMsg = "灰度服务删除成功";
 		return httpResult;
 	}
 	
