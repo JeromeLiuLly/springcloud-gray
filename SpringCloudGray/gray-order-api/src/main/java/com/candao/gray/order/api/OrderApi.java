@@ -18,12 +18,12 @@ public interface OrderApi {
     
     /**
      * 获取骑手订单列表集合
-     * @param horsemanId	骑手id
+     * @param userName
      * @return
      */
-    @RequestMapping(value = "/getOrderInfoListByHorsemanId", method = RequestMethod.POST)
+    @RequestMapping(value = "/getOrderInfoListByUserName", method = RequestMethod.POST)
     @ResponseBody
-    List<OrderInfo> getListByHorsemanId(@RequestParam("horsemanId") Integer horsemanId);
+    List<OrderInfo> getListByUserName(@RequestParam("userName") String userName);
     
     
     /**
@@ -33,6 +33,6 @@ public interface OrderApi {
      */
     @RequestMapping(value = "/getOrderInfo", method = RequestMethod.POST)
     @ResponseBody
-    OrderInfo getOrderInfo(@RequestParam("orderId") String orderId);
+    OrderInfo getOrderInfo(@RequestParam("userName") String userName);
 
 }

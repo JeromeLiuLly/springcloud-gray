@@ -18,16 +18,16 @@ public class OrderController {
 	@Autowired
 	private OrderInfoFeignClient orderInfoFeignClient;
 
-	@RequestMapping(value = "/getOrderInfoListByHorsemanId", method = RequestMethod.POST)
+	@RequestMapping(value = "/getOrderInfoListByUserName", method = RequestMethod.POST)
 	@ResponseBody
-	public List<OrderInfo> getListByHorsemanId(@RequestParam("horsemanId") Integer horsemanId) {
-		return orderInfoFeignClient.getListByHorsemanId(horsemanId);
+	public List<OrderInfo> getListByHorsemanId(@RequestParam("userName") String userName) {
+		return orderInfoFeignClient.getListByUserName(userName);
 	}
 
 	@RequestMapping(value = "/getOrderInfo", method = RequestMethod.POST)
     @ResponseBody
-	public OrderInfo getOrderInfo(@RequestParam("orderId") String orderId) {
-		return orderInfoFeignClient.getOrderInfo(orderId);
+	public OrderInfo getOrderInfo(@RequestParam("userName") String userName) {
+		return orderInfoFeignClient.getOrderInfo(userName);
 	}
 
 }

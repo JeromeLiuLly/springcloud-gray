@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.candao.gray.web.bean.GrayUser;
 import com.candao.gray.web.dao.GrayUserRepository;
 import com.candao.irms.framework.jpa.specification.Filter;
@@ -25,14 +28,15 @@ public class GrayUserService {
 	}
 	
 	public GrayUser getUserByUseName(String userName){
-		StringBuffer sql = new StringBuffer("select * from grayuser");
-		List<Order> orders = new ArrayList<Order>();
-		Order order = new Order("weight", Direction.asc);
-		orders.add(order);
+		GrayUser grayUser = new GrayUser();
+		grayUser.setStatus(1);
+		grayUser.setUserName(userName);
+		Example<GrayUser> example = Example.of(grayUser);
 		
-		QueryParams<GrayUser> queryParams = new QueryParams<GrayUser>();
-		queryParams.clearAll().and(Filter.eq("user_name", userName)).and(Filter.eq("status", 1)).setOrders(orders);;
-		List<GrayUser> grayUsers =  grayUserRepository.findByQueryParam(sql, queryParams);
+		Sort sort = new Sort(Sort.Direction.DESC, "weight");
+		List<GrayUser> grayUsers = grayUserRepository.findAll(example,sort);
+		
+		System.out.println(JSONObject.toJSONString(grayUsers));
 		if (grayUsers != null && grayUsers.size() > 0) {
 			return grayUsers.get(0);
 		}

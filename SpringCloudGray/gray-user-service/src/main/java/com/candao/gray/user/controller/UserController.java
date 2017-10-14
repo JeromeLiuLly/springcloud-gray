@@ -1,29 +1,66 @@
 package com.candao.gray.user.controller;
 
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.candao.gray.user.api.UserApi;
-import com.candao.gray.user.api.bean.OrderModel;
+import com.candao.gray.user.api.bean.UserModel;
 
 @RestController
 public class UserController implements UserApi {
 
+	@Autowired
+	private DiscoveryClient discoveryClient;
+
 	@Override
-	public String hello(String name, int age) {
-		return "user-service,flag:release" + name + age;
+	public String hello(String userName) {
+
+		Map<String, String> map = null;
+		List<ServiceInstance> serviceInstances = discoveryClient.getInstances("user-service");
+		for (ServiceInstance serviceInstance : serviceInstances) {
+			if (serviceInstance.getPort() == 6010) {
+				map = serviceInstance.getMetadata();
+				break;
+			}
+		}
+		String result = "";
+		if (map != null && !map.isEmpty()) {
+			result += "user-service 服务metaData：" + JSONObject.toJSONString(map);
+		} else {
+			result += "user-service 服务metaData是空,可以识别为正常服务";
+		}
+		return result;
 	}
 
 	@Override
-	public OrderModel post(OrderModel orderModel) {
-		orderModel.setOrderNo(2222222L);
-		return orderModel;
-	}
+	public UserModel post(String userName) {
 
-	@Override
-	public String testGet(Map<String, Object> map) {
-		return String.valueOf(map);
+		Map<String, String> map = null;
+		List<ServiceInstance> serviceInstances = discoveryClient.getInstances("user-service");
+		for (ServiceInstance serviceInstance : serviceInstances) {
+			if (serviceInstance.getPort() == 6010) {
+				map = serviceInstance.getMetadata();
+				break;
+			}
+		}
+
+		UserModel userModel = new UserModel();
+		userModel.setUserName(userName);
+		userModel.setId(UUID.randomUUID().toString());
+		if (map != null && !map.isEmpty()) {
+			userModel.setFlag("user-service 服务metaData：" + JSONObject.toJSONString(map));
+		} else {
+			userModel.setFlag("user-service 服务metaData是空,可以识别为正常服务");
+		}
+		return userModel;
 	}
 
 }

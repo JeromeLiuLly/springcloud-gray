@@ -1,12 +1,12 @@
-package com.candao.gray.order.api.bean;
+package com.candao.gray.user.api.bean;
 
-public class OrderInfo{
-	
+public class UserModel {
+
 	private String id;
 	
-	private String brandName;
-	
 	private String userName;
+	
+	private String flag;
 
 	public String getId() {
 		return id;
@@ -14,14 +14,6 @@ public class OrderInfo{
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getBrandName() {
-		return brandName;
-	}
-
-	public void setBrandName(String brandName) {
-		this.brandName = brandName;
 	}
 
 	public String getUserName() {
@@ -32,4 +24,12 @@ public class OrderInfo{
 		this.userName = userName;
 	}
 
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+	
 }

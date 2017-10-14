@@ -1,32 +1,16 @@
 package com.candao.gray.gateway;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 
+import com.alibaba.fastjson.JSONObject;
 import com.candao.gray.core.CoreHeaderInterceptor;
+import com.candao.gray.core.net.HttpClient;
+import com.candao.gray.core.net.HttpResult;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
 public class PreFilter extends ZuulFilter {
-	private static final Map<String, String> TOKEN_LABEL_MAP = new HashMap<String, String>();
-
-	static {
-		TOKEN_LABEL_MAP.put("emt", "EN,Male,Test");
-		TOKEN_LABEL_MAP.put("eft", "EN,Female,Test");
-		TOKEN_LABEL_MAP.put("cmt", "CN,Male,Test");
-		TOKEN_LABEL_MAP.put("cft", "CN,Female,Test");
-		TOKEN_LABEL_MAP.put("em", "EN,Male");
-		TOKEN_LABEL_MAP.put("ef", "EN,Female");
-		TOKEN_LABEL_MAP.put("cm", "CN,Male");
-		TOKEN_LABEL_MAP.put("cf", "CN,Female");
-
-		TOKEN_LABEL_MAP.put("gray", "gray");
-	}
-
 	private static final Logger logger = LoggerFactory.getLogger(PreFilter.class);
 
 	@Override
@@ -47,9 +31,19 @@ public class PreFilter extends ZuulFilter {
 	@Override
 	public Object run() {
 		RequestContext ctx = RequestContext.getCurrentContext();
-		String token = ctx.getRequest().getHeader(HttpHeaders.AUTHORIZATION);
-
-		String labels = TOKEN_LABEL_MAP.get(token);
+		String userName = ctx.getRequest().getParameter("userName");
+		String url = "http://10.200.102.136:6015/user/"+userName+"/getUser";
+		String labels = null;
+		try {
+			HttpResult result = HttpClient.get(url, null);
+			if (result.content != null) {
+				GrayUser grayUser = JSONObject.parseObject(result.content, GrayUser.class);
+				labels = grayUser.getServiceTag();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		logger.info("label: " + labels);
 

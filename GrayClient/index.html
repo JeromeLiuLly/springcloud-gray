@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <title>首页</title>
+    <style type="text/css">
+      body {
+        font-family: 微软雅黑
+      }
+
+      .btn-lg {
+        padding: 5px 8px;
+        font-size: 15px;
+        line-height: 1.3333333;
+        border-radius: 6px;
+      }
+    </style>
+
+    <script type="text/javascript">
+
+      var onGray1 = function(){
+        $.ajax({
+            url : "/user/order/inner/order/getOrderInfoListByUserName?userName=" + localStorage.getItem("userName"),
+            type:"POST"
+            success : function(data) {
+                var obj = data[0];
+                $("#onGray0").html(obj.brandName);
+            },
+            error : function(data) {
+                alert("服务异常");
+            }
+        })
+      }
+
+      var onGray1 = function(){
+        $.ajax({
+            url : "/user/addUser",
+            data: user,
+            success : function(data) {
+                if(data.statusCode == "200"){
+                    alert(data.errorMsg);
+                    window.location.reload()
+                }else{
+                    alert(data.errorMsg)
+                }
+            },
+            error : function(data) {
+                alert("服务异常");
+            }
+        })
+      }
+
+      var onGray2 = function(){
+        
+      }
+
+      var onGray3 = function(){
+        
+      }
+
+      var onGray4 = function(){
+        
+      }
+
+      var onGray5 = function(){
+        
+      }
+    </script>
+  </head>
+
+  <body>
+
+    <!-- <h2>(灰度用户): 前端 ==> 网关(是否开启灰度) ==> 正常(灰度)服务 </h2><div style="margin-left: 800px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray0()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray0" style="color:red;font-size:16px">请求结果返回</span></div> -->
+
+    <h2>(灰度用户): 前端 ==> 网关 ==> 正常服务 ==> 灰度服务</h2><div style="margin-left: 800px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray1()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray1" style="color:red;font-size:16px">请求结果返回</span></div>
+
+    <h2>(灰度用户): 前端 ==> 网关 ==> 灰度服务 ==> 正常服务</h2><div style="margin-left: 800px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray2()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray2" style="color:red;font-size:16px">请求结果返回</span></div>
+
+    <h2>(灰度用户): 前端 ==> 网关 ==> 灰度服务 ==> 灰度服务</h2><div style="margin-left: 800px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray3()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray3" style="color:red;font-size:16px">请求结果返回</span></div>
+
+    <h2>(灰度用户): 前端 ==> 网关 ==> 正常服务 ==> 正常服务</h2><div style="margin-left: 800px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray4()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray4" style="color:red;font-size:16px">请求结果返回</span></div>
+
+    <h2>(正常用户): 前端 ==> 网关 ==> 正常服务 ==> 正常服务</h2><div style="margin-left: 800px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray5()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray5" style="color:red;font-size:16px">请求结果返回</span></div>
+  </body>
+</html>
