@@ -38,9 +38,9 @@ public class OrderController implements OrderApi {
 			}
 		}
 		if (map != null && !map.isEmpty() ) {
-			orderInfo.setBrandName("order-service metadata不为空,我是灰度服务!!! 服务metaData："+JSONObject.toJSONString(map));
+			orderInfo.setBrandName("order-service metadata不为空,我是灰度服务!!! 服务metaData："+JSONObject.toJSONString(map)+"; ");
 		}else{
-			orderInfo.setBrandName("order-service 服务metaData是空,可以识别为正常服务");
+			orderInfo.setBrandName("order-service 服务metaData是空,可以识别为正常服务; ");
 		}
 		orderInfo.setUserName(userName);
 		
@@ -61,9 +61,9 @@ public class OrderController implements OrderApi {
 			}
 		}
 		if (map != null && !map.isEmpty() ) {
-			orderInfo.setBrandName("order-service metadata不为空,我是灰度服务!!! 服务metaData："+JSONObject.toJSONString(map));
+			orderInfo.setBrandName("order-service metadata不为空,我是灰度服务!!! 服务metaData："+JSONObject.toJSONString(map)+"; ");
 		}else{
-			orderInfo.setBrandName("order-service 服务metaData是空,可以识别为正常服务");
+			orderInfo.setBrandName("order-service 服务metaData是空,可以识别为正常服务; ");
 		}
 		orderInfo.setUserName(userName);
 		return orderInfo;
