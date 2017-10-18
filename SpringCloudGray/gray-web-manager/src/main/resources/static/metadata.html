@@ -28,7 +28,16 @@ var editUserData = new Map();
 				var status = arr[index].status==1 ? "生效" : "关闭";
 				html += '<td>'+status+'</td>';
 				html += '<td>';
-				html += '<button type="button" onclick="synMetaDataStrategy(\''+arr[index].id+'\',\''+arr[index].serviceName+'\',\''+arr[index].instanceId+'\',\''+arr[index].serviceTag +"="+arr[index].strategyValue+'\')" class="btn btn-lg btn-success">同步</button>';
+				var serviceTag;
+				var serviceValue;
+				if(arr[index].serviceTag == ""){
+					serviceTag = "weight";
+					serviceValue = weight;
+				}else{
+					serviceTag = arr[index].serviceTag;
+					serviceValue = arr[index].strategyValue;
+				}
+				html += '<button type="button" onclick="synMetaDataStrategy(\''+arr[index].id+'\',\''+arr[index].serviceName+'\',\''+arr[index].instanceId+'\',\''+serviceTag +"="+serviceValue+'\')" class="btn btn-lg btn-success">同步</button>';
 				html += '&nbsp;&nbsp;&nbsp;';
 				var result = arr[index].status==1 ? "关闭" : "开启";
 				html += '<button type="button" onclick="opStrategyStatus(\''+arr[index].id+'\')" class="btn btn-lg btn-default">'+result+'</button>';
@@ -52,6 +61,8 @@ var editUserData = new Map();
 				html += '<td>'+arr[index].id+'</td>';
 				html += '<td>'+arr[index].userName+'</td>';
 				html += '<td>'+arr[index].serviceTag+'</td>';
+				html += '<td>'+arr[index].serviceValue+'</td>';
+				html += '<td>'+arr[index].strategy+'</td>';
 				var weight = arr[index].weight == null ? " " : arr[index].weight;
 				html += '<td>'+weight+'</td>';
 				var status = arr[index].status==1 ? "生效" : "关闭";
@@ -398,6 +409,8 @@ var editUserData = new Map();
 		user.id = $("#id").val();
 		user.weight = $("#weightUser").val();
 		user.serviceTag = $("#serviceTagUser").val();
+		user.serviceValue = $("#serviceValueUser").val();
+		user.strategy = $("#strategy").val();
 		user.status = $("#statusUser").val();
 		$.ajax({
 			url : "/user/editUser",
@@ -422,6 +435,8 @@ var editUserData = new Map();
 		user.userName = $("#userName").val();
 		user.weight = $("#weightUser").val();
 		user.serviceTag = $("#serviceTagUser").val();
+		user.serviceValue=$("#serviceValueUser").val();
+		user.strategy=$("#strategy").val();
 		user.status = $("#statusUser").val();
 		$.ajax({
 			url : "/user/addUser",
@@ -468,6 +483,8 @@ var editUserData = new Map();
 		$("#userName").val(data.userName);
 		$("#weightUser").val(data.weight);
 		$("#serviceTagUser").val(data.serviceTag);
+		$("#serviceValueUser").val(data.serviceValue);
+		$("#strategy").val(data.strategy);
 		$("#statusUser").find("option[value="+data.status+"]").attr("selected",true);
 		$("#submitUserOP").attr("onclick","editUserSubmit()");
 	}
@@ -519,7 +536,7 @@ body {
 								<th>灰度名称</th>
 								<th>服务名</th>
 								<th>instanceId</th>
-								<th>灰度标签</th>
+								<th>灰度标签(可选【灰度标签/值域和权重,选择一个】)</th>
 								<th>灰度值域(可选)</th>
 								<th>权重(可选)</th>
 								<th>服务版本号</th>
@@ -546,7 +563,9 @@ body {
 							<tr>
 								<th>id</th>
 								<th>用户名</th>
+								<th>灰度标签</th>
 								<th>灰度值域</th>
+								<th>灰度策略</th>
 								<th>权重(用于同用户名下的灰度策略,取权重最大的)</th>
 								<th>状态</th>
 								<th>操作</th>
@@ -635,6 +654,8 @@ body {
 			    <input id="id"  type="hidden" />
 				用户名：<input id="userName" class="form-control" type="text"/>
 				灰度标签：<input id="serviceTagUser" class="form-control" type="text"/>
+				灰度值域：<input id="serviceValueUser" class="form-control" type="text"/>
+				灰度策略：<input id="strategy" class="form-control" type="text"/>
 				权重: <input id="weightUser" class="form-control" type="number"/>
 				服务状态:<select id="statusUser" class="form-control">
   							<option value="1">生效</option>

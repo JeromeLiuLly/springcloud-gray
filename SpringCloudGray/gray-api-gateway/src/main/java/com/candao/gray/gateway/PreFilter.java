@@ -34,24 +34,27 @@ public class PreFilter extends ZuulFilter {
 		String userName = ctx.getRequest().getParameter("userName");
 		String url = "http://10.200.102.136:6015/user/"+userName+"/getUser";
 		String labels = null;
+		String tag = null;
 		try {
 			HttpResult result = HttpClient.get(url, null);
 			if (result.content != null) {
 				GrayUser grayUser = JSONObject.parseObject(result.content, GrayUser.class);
-				labels = grayUser.getServiceTag();
+				labels = grayUser.getServiceValue();
+				tag = grayUser.getServiceTag();
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		logger.info("label: " + labels);
+		logger.info("label: " + labels + " tag: " + tag);
 
 		//断言,如果不存在灰度,不进行 flag位 透传
-		CoreHeaderInterceptor.initHystrixRequestContext(labels); // zuul本身调用微服务
+		CoreHeaderInterceptor.initHystrixRequestContext(labels,tag); // zuul本身调用微服务
 
 		// 透传上下文
 		ctx.addZuulRequestHeader(CoreHeaderInterceptor.HEADER_LABEL, labels); // 传递给后续微服务
+		ctx.addZuulRequestHeader(CoreHeaderInterceptor.HEADER_TAG, tag); // 传递给后续微服务
 
 		return null;
 	}

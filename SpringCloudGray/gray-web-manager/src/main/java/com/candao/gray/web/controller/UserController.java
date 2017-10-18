@@ -69,6 +69,8 @@ public class UserController {
 		grayUserDB.setStatus(grayUser.getStatus());
 		grayUserDB.setServiceTag(grayUser.getServiceTag());
 		grayUserDB.setWeight(grayUser.getWeight());
+		grayUserDB.setServiceValue(grayUser.getServiceValue());
+		grayUserDB.setStrategy(grayUser.getStrategy());
 		
 		grayUserService.updateUser(grayUserDB);
 		
@@ -88,7 +90,8 @@ public class UserController {
 		grayUserDB.setStatus(grayUser.getStatus());
 		grayUserDB.setServiceTag(grayUser.getServiceTag());
 		grayUserDB.setWeight(grayUser.getWeight());
-		
+		grayUserDB.setServiceValue(grayUser.getServiceValue());
+		grayUserDB.setStrategy(grayUser.getStrategy());
 		
 		HttpResult httpResult = new HttpResult();
 		try {

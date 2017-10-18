@@ -12,10 +12,10 @@ public class CoreFeignRequestInterceptor implements RequestInterceptor {
 
 	@Override
 	public void apply(RequestTemplate template) {
-		String header = StringUtils.collectionToDelimitedString(CoreHeaderInterceptor.label.get(),
-				CoreHeaderInterceptor.HEADER_LABEL_SPLIT);
-		template.header(CoreHeaderInterceptor.HEADER_LABEL, header);
-		logger.info("label: " + header);
+		String header = StringUtils.collectionToDelimitedString(CoreHeaderInterceptor.label.get(),CoreHeaderInterceptor.HEADER_LABEL_SPLIT);
+		String tag = CoreHeaderInterceptor.tag.get();
+		template.header(CoreHeaderInterceptor.HEADER_LABEL, header).header(CoreHeaderInterceptor.HEADER_TAG, tag);
+		logger.info("label: " + header + " tag : " + tag);
 	}
 
 }

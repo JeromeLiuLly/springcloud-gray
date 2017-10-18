@@ -1,6 +1,5 @@
 package com.candao.gray.web.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +10,6 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.candao.gray.web.bean.GrayUser;
 import com.candao.gray.web.dao.GrayUserRepository;
-import com.candao.irms.framework.jpa.specification.Filter;
-import com.candao.irms.framework.jpa.specification.Order;
-import com.candao.irms.framework.jpa.specification.Order.Direction;
-import com.candao.irms.framework.jpa.specification.QueryParams;
 
 
 @Service

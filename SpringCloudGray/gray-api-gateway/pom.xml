@@ -8,9 +8,7 @@
 		<artifactId>SpringCloudGray</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<groupId>com.candao.gray</groupId>
 	<artifactId>gray-api-gateway</artifactId>
-	<version>0.0.1</version>
 	<name>gray-api-gateway</name>
 	<url>http://maven.apache.org</url>
 	<properties>

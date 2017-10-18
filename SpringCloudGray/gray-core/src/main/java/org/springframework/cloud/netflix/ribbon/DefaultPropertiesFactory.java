@@ -18,18 +18,19 @@ public class DefaultPropertiesFactory extends PropertiesFactory {
     @Autowired
     private Environment environment;
 
-    private Map<Class, String> classToProperty = new HashMap<>();
+    private Map<Class<?>, String> classToProperty = new HashMap<Class<?>, String>();
 
     public DefaultPropertiesFactory() {
         super();
-        //classToProperty.put(ILoadBalancer.class, "NFLoadBalancerClassName");
-        //classToProperty.put(IPing.class, "NFLoadBalancerPingClassName");
+        classToProperty.put(ILoadBalancer.class, "NFLoadBalancerClassName");
+        classToProperty.put(IPing.class, "NFLoadBalancerPingClassName");
         classToProperty.put(IRule.class, "NFLoadBalancerRuleClassName");
-        //classToProperty.put(ServerList.class, "NIWSServerListClassName");
-        //classToProperty.put(ServerListFilter.class, "NIWSServerListFilterClassName");
+        classToProperty.put(ServerList.class, "NIWSServerListClassName");
+        classToProperty.put(ServerListFilter.class, "NIWSServerListFilterClassName");
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public String getClassName(Class clazz, String name) {
         String className = super.getClassName(clazz, name);
         // 读取全局配置

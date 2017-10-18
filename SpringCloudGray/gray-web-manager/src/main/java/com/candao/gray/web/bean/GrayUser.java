@@ -20,9 +20,15 @@ public class GrayUser {
 	
 	@Column(name = "service_tag")
 	private String serviceTag;
+
+	@Column(name = "service_value")
+	private String serviceValue;
 	
 	@Column(name = "weight")
 	private Integer weight;
+	
+	@Column(name = "strategy")
+	private String strategy;
 	
 	@Column(name = "status")
 	private Integer status;
@@ -51,12 +57,28 @@ public class GrayUser {
 		this.serviceTag = serviceTag;
 	}
 
+	public String getServiceValue() {
+		return serviceValue;
+	}
+
+	public void setServiceValue(String serviceValue) {
+		this.serviceValue = serviceValue;
+	}
+
 	public Integer getWeight() {
 		return weight;
 	}
 
 	public void setWeight(Integer weight) {
 		this.weight = weight;
+	}
+
+	public String getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategy(String strategy) {
+		this.strategy = strategy;
 	}
 
 	public Integer getStatus() {

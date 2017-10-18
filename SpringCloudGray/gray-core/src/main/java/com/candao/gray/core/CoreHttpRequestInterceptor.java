@@ -2,6 +2,7 @@ package com.candao.gray.core;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -19,9 +20,15 @@ public class CoreHttpRequestInterceptor implements ClientHttpRequestInterceptor 
         HttpRequestWrapper requestWrapper = new HttpRequestWrapper(request);
 
         String header = StringUtils.collectionToDelimitedString(CoreHeaderInterceptor.label.get(), CoreHeaderInterceptor.HEADER_LABEL_SPLIT);
-        logger.info("label: "+header);
-        requestWrapper.getHeaders().add(CoreHeaderInterceptor.HEADER_LABEL, header);
-
+        
+        String tag = CoreHeaderInterceptor.tag.get();
+        
+        logger.info("label: "+header + " tag : " + tag);
+        
+        HttpHeaders headers = requestWrapper.getHeaders();
+        headers.add(CoreHeaderInterceptor.HEADER_LABEL, header);
+        headers.add(CoreHeaderInterceptor.HEADER_TAG, tag);
+        
         return execution.execute(requestWrapper, body);
     }
 }

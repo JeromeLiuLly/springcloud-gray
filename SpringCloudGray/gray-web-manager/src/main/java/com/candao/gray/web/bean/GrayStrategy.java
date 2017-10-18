@@ -39,7 +39,6 @@ public class GrayStrategy {
 	
 	//服务灰度标签
 	@Column(name = "service_tag")
-	@NotBlank(message = "服务灰度标签不能为空")
 	private String serviceTag;
 	
 	//灰度值域

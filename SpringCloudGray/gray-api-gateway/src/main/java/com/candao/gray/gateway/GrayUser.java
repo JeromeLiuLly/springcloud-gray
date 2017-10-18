@@ -7,6 +7,10 @@ public class GrayUser {
 	
 	private String serviceTag;
 	
+	private String serviceValue;
+	
+	private String strategy;
+	
 	private Integer weight;
 	
 	private Integer status;
@@ -35,12 +39,28 @@ public class GrayUser {
 		this.serviceTag = serviceTag;
 	}
 
+	public String getServiceValue() {
+		return serviceValue;
+	}
+
+	public void setServiceValue(String serviceValue) {
+		this.serviceValue = serviceValue;
+	}
+
 	public Integer getWeight() {
 		return weight;
 	}
 
 	public void setWeight(Integer weight) {
 		this.weight = weight;
+	}
+
+	public String getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategy(String strategy) {
+		this.strategy = strategy;
 	}
 
 	public Integer getStatus() {

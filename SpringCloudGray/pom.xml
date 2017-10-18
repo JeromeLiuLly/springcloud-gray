@@ -32,6 +32,7 @@
 		<module>gray-order-service2</module>
 		<module>gray-user-service2</module>
 		<module>gray-web-manager</module>
+		<module>gray-user-service3</module>
 	</modules>
 
 	<dependencies>
