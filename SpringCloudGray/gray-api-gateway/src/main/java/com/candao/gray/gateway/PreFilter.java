@@ -2,6 +2,7 @@ package com.candao.gray.gateway;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.candao.gray.core.CoreHeaderInterceptor;
@@ -37,7 +38,7 @@ public class PreFilter extends ZuulFilter {
 		String tag = null;
 		try {
 			HttpResult result = HttpClient.get(url, null);
-			if (result.content != null) {
+			if (!StringUtils.isEmpty(result.content)) {
 				GrayUser grayUser = JSONObject.parseObject(result.content, GrayUser.class);
 				labels = grayUser.getServiceValue();
 				tag = grayUser.getServiceTag();

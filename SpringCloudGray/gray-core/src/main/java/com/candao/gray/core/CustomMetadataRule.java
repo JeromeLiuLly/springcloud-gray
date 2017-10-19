@@ -9,11 +9,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.candao.gray.core.net.HttpClient;
 import com.candao.gray.core.net.HttpResult;
 import com.candao.gray.core.rule.RoundRobinRuleBySelf;
-import com.candao.gray.core.rule.WeightedResponseTimeRuleBySelf;
 import com.netflix.loadbalancer.Server;
 import com.netflix.loadbalancer.ZoneAvoidanceRule;
 
-public class LabelAndWeightMetadataRule extends ZoneAvoidanceRule {
+public class CustomMetadataRule extends ZoneAvoidanceRule {
 
 	// 检测灰度开关是否启动
 	private HttpResult checkGraySwitch() {

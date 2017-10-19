@@ -77,8 +77,30 @@
   </head>
 
   <body>
+=====================================================灰度开关业务线========================================================================================
+    <h2>(灰度用户): 前端 ==> 网关(关闭灰度) ==> 正常服务 </h2><div style="margin-left: 870px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray0()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray0" style="color:red;font-size:16px">请求结果返回</span></div>
+    1.关闭灰度总开关<br/>
+    2.配置灰度对象<br/>
+    3.启动多个order-service服务<br/>
 
-    <!-- <h2>(灰度用户): 前端 ==> 网关(是否开启灰度) ==> 正常(灰度)服务 </h2><div style="margin-left: 800px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray0()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray0" style="color:red;font-size:16px">请求结果返回</span></div> -->
+    <h2>(正常用户): 前端 ==> 网关(关闭灰度) ==> 灰度服务 </h2><div style="margin-left: 870px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray0()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray0" style="color:red;font-size:16px">请求结果返回</span></div>
+    1.关闭灰度总开关<br/>
+    2.随便选择一个空对象<br/>
+    3.启动多个order-service服务<br/>
+    4.设置其中一个或者多个order-service服务为灰度服务<br/>
+
+    <h2>(灰度用户): 前端 ==> 网关(开启灰度) ==> 正常服务 </h2><div style="margin-left: 870px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray0()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray0" style="color:red;font-size:16px">请求结果返回</span></div>
+    1.开启灰度总开关<br/>
+    2.配置灰度对象<br/>
+    3.启动多个order-service服务<br/>
+
+    <h2>(正常用户): 前端 ==> 网关(开启灰度) ==> 灰度服务 </h2><div style="margin-left: 870px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray0()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray0" style="color:red;font-size:16px">请求结果返回</span></div>
+    1.开启灰度总开关<br/>
+    2.随便选择一个空对象<br/>
+    3.启动多个order-service服务<br/>
+    4.设置其中一个或者多个order-service服务为灰度服务<br/>
+
+=====================================================正常业务线===========================================================================================
 
     <h2>(灰度用户): 前端 ==> 网关 ==> 正常服务 ==> 灰度服务</h2><div style="margin-left: 800px;margin-top: -40px; padding-bottom: 50px;"><button type="button" onclick="onGray1()" class="btn btn-lg btn-success">触发</button>&nbsp;&nbsp;&nbsp;<span id="onGray1" style="color:red;font-size:16px">请求结果返回</span></div>
 
